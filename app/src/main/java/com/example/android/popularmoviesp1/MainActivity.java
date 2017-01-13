@@ -13,14 +13,18 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterOnClickHandler {
 
 	private RecyclerView mRecyclerView;
+
+	private MoviesGridAdapter mAdapter;
+
 	private TextView mErrorMessageDisplay;
 	private ProgressBar mLoadingIndicator;
 
@@ -34,8 +38,11 @@ public class MainActivity extends AppCompatActivity {
 		mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 		mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error);
 		GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+		mAdapter = new MoviesGridAdapter(this);
 
 		mRecyclerView.setLayoutManager(layoutManager);
+		mRecyclerView.setAdapter(mAdapter);
+
 		mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 		loadMovies();
 	}
@@ -75,6 +82,11 @@ public class MainActivity extends AppCompatActivity {
 		}
 	}
 
+	@Override
+	public void onClick(Movie movie) {
+		//TODO open details screen
+	}
+
 	public class FetchMovies extends AsyncTask<String, Void, String> {
 
 		@Override
@@ -106,7 +118,12 @@ public class MainActivity extends AppCompatActivity {
 		protected void onPostExecute(String data) {
 			if (data != null) {
 				Log.d(MainActivity.class.getSimpleName(), data);
-				showData();
+				Movie[] movies = APIUtils.getMovieArrayFromNetworkResponse(data);
+				if (movies == null) showErrorMessage();
+				else {
+					mAdapter.setMoviesList(movies);
+					showData();
+				}
 			} else showErrorMessage();
 		}
 	}

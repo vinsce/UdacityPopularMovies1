@@ -2,6 +2,13 @@ package com.example.android.popularmoviesp1.utils;
 
 import android.net.Uri;
 
+import com.example.android.popularmoviesp1.model.Movie;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -23,7 +30,7 @@ public class APIUtils {
 
 
 	public static Uri getURLForImage(String relativeImagePath) {
-		return Uri.parse(BASE_IMAGE_URL).buildUpon().appendPath(IMAGE_SIZE_CODE).appendPath(relativeImagePath).build();
+		return Uri.parse(BASE_IMAGE_URL).buildUpon().appendPath(IMAGE_SIZE_CODE).appendEncodedPath(relativeImagePath).build();
 	}
 
 	public static URL getMoviesURL(String apiKey, SortOption sortOption) {
@@ -42,6 +49,29 @@ public class APIUtils {
 			e.printStackTrace();
 		}
 		return url;
+	}
+
+	public static Movie[] getMovieArrayFromNetworkResponse(String response) {
+		try {
+			JSONObject mainJson = new JSONObject(response);
+			JSONArray moviesArray = mainJson.getJSONArray("results");
+
+			Movie[] resultArray = new Movie[moviesArray.length()];
+
+			Movie tmpMovie;
+			Gson gson = new Gson();
+			for (int i = 0; i < moviesArray.length(); i++) {
+				tmpMovie = gson.fromJson(moviesArray.getString(i), Movie.class);
+				resultArray[i] = tmpMovie;
+			}
+
+			return resultArray;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
+
 	}
 
 	public enum SortOption {MOST_POPULAR, TOP_RATED}
