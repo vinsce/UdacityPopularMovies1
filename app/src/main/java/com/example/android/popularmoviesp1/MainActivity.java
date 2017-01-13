@@ -22,6 +22,7 @@ import com.google.gson.Gson;
 import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterOnClickHandler {
+	private static final String SORT_OPTION_STATE_KEY = "SORTING";
 
 	private RecyclerView mRecyclerView;
 
@@ -35,6 +36,11 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+		if (savedInstanceState != null && savedInstanceState.containsKey(SORT_OPTION_STATE_KEY)) {
+			mSortOption = APIUtils.SortOption.values()[savedInstanceState.getInt(SORT_OPTION_STATE_KEY)];
+		}
+
 		setContentView(R.layout.activity_main);
 		//init views
 		mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
@@ -62,6 +68,18 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
+
+		MenuItem mostPopularItem = menu.findItem(R.id.action_sort_popular);
+		MenuItem topRatedItem = menu.findItem(R.id.action_sort_rating);
+
+		switch (mSortOption) {
+			case MOST_POPULAR:
+				mostPopularItem.setChecked(true);
+				break;
+			case TOP_RATED:
+				topRatedItem.setChecked(true);
+				break;
+		}
 		return true;
 	}
 
@@ -153,4 +171,10 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 		mRecyclerView.setVisibility(View.VISIBLE);
 	}
 
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putInt(SORT_OPTION_STATE_KEY, mSortOption.ordinal());
+	}
 }

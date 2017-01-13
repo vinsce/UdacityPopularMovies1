@@ -27,6 +27,10 @@ public class DetailsActivity extends AppCompatActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
+		if (savedInstanceState != null && savedInstanceState.containsKey(MOVIE_JSON_ARG_KEY)) {
+			String movieString = savedInstanceState.getString(MOVIE_JSON_ARG_KEY);
+			mMovie = new Gson().fromJson(movieString, Movie.class);
+		}
 		if (getIntent() != null && getIntent().hasExtra(MOVIE_JSON_ARG_KEY)) {
 			String movieString = getIntent().getStringExtra(MOVIE_JSON_ARG_KEY);
 			mMovie = new Gson().fromJson(movieString, Movie.class);
@@ -61,5 +65,12 @@ public class DetailsActivity extends AppCompatActivity {
 		mDateTextView.setText(String.valueOf(calendar.get(Calendar.YEAR)));
 
 		Picasso.with(this).load(APIUtils.getURLForImage(mMovie.getImageUrl())).into(mImageView);
+	}
+
+	@Override
+	protected void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+
+		outState.putString(MOVIE_JSON_ARG_KEY, new Gson().toJson(mMovie));
 	}
 }
