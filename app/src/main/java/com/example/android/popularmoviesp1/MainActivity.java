@@ -1,5 +1,6 @@
 package com.example.android.popularmoviesp1;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +17,7 @@ import android.widget.Toast;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
+import com.google.gson.Gson;
 
 import java.net.URL;
 
@@ -84,7 +86,9 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 
 	@Override
 	public void onClick(Movie movie) {
-		//TODO open details screen
+		Intent intentToStartDetailActivity = new Intent(this, DetailsActivity.class);
+		intentToStartDetailActivity.putExtra(DetailsActivity.MOVIE_JSON_ARG_KEY, new Gson().toJson(movie));
+		startActivity(intentToStartDetailActivity);
 	}
 
 	public class FetchMovies extends AsyncTask<String, Void, String> {
