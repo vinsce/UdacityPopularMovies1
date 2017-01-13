@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 
 		mRecyclerView.setLayoutManager(layoutManager);
 		mRecyclerView.setAdapter(mAdapter);
+		mRecyclerView.setHasFixedSize(true);
 
 		mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 		loadMovies();
@@ -52,8 +53,10 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	private void loadMovies() {
 		if (Networking.isNetworkAvailable(this))
 			new FetchMovies().execute(getString(R.string.api_key));
-		else
+		else {
+			showErrorMessage();
 			Toast.makeText(this, R.string.network_unavailable, Toast.LENGTH_LONG).show();
+		}
 	}
 
 	@Override
@@ -149,6 +152,5 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 		mErrorMessageDisplay.setVisibility(View.INVISIBLE);
 		mRecyclerView.setVisibility(View.VISIBLE);
 	}
-
 
 }
