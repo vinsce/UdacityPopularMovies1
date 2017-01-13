@@ -4,6 +4,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
@@ -20,6 +22,25 @@ public class MainActivity extends AppCompatActivity {
 		new FetchMovies().execute(getString(R.string.api_key));
 	}
 
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_sort_popular:
+				item.setChecked(true);
+				return true;
+			case R.id.action_sort_rating:
+				item.setChecked(true);
+				return true;
+			default:
+				return super.onOptionsItemSelected(item);
+		}
+	}
 
 	public class FetchMovies extends AsyncTask<String, Void, String> {
 
