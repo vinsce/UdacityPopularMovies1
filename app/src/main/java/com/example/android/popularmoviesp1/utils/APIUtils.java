@@ -22,16 +22,8 @@ public class APIUtils {
 	private static String IMAGE_SIZE_CODE = "w185";
 
 
-	public static URL getURLForImage(String relativeImagePath) {
-		Uri builtUri = Uri.parse(BASE_IMAGE_URL).buildUpon().appendPath(IMAGE_SIZE_CODE).appendPath(relativeImagePath).build();
-
-		URL url = null;
-		try {
-			url = new URL(builtUri.toString());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return url;
+	public static Uri getURLForImage(String relativeImagePath) {
+		return Uri.parse(BASE_IMAGE_URL).buildUpon().appendPath(IMAGE_SIZE_CODE).appendPath(relativeImagePath).build();
 	}
 
 	public static URL getMoviesURL(String apiKey, SortOption sortOption) {
