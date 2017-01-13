@@ -3,9 +3,14 @@ package com.example.android.popularmoviesp1;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesp1.utils.APIUtils;
@@ -15,12 +20,23 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+	private RecyclerView mRecyclerView;
+	private TextView mErrorMessageDisplay;
+	private ProgressBar mLoadingIndicator;
+
 	private APIUtils.SortOption mSortOption;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		//init views
+		mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
+		mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error);
+		GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+
+		mRecyclerView.setLayoutManager(layoutManager);
+		mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
 		loadMovies();
 	}
 
@@ -64,6 +80,7 @@ public class MainActivity extends AppCompatActivity {
 		@Override
 		protected void onPreExecute() {
 			super.onPreExecute();
+			showProgressBar();
 		}
 
 		@Override
@@ -87,7 +104,30 @@ public class MainActivity extends AppCompatActivity {
 
 		@Override
 		protected void onPostExecute(String data) {
-			Log.d(MainActivity.class.getSimpleName(), data);
+			if (data != null) {
+				Log.d(MainActivity.class.getSimpleName(), data);
+				showData();
+			} else showErrorMessage();
 		}
 	}
+
+	private void showProgressBar() {
+		mLoadingIndicator.setVisibility(View.VISIBLE);
+		mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+		mRecyclerView.setVisibility(View.INVISIBLE);
+	}
+
+	private void showErrorMessage() {
+		mRecyclerView.setVisibility(View.INVISIBLE);
+		mLoadingIndicator.setVisibility(View.INVISIBLE);
+		mErrorMessageDisplay.setVisibility(View.VISIBLE);
+	}
+
+	private void showData() {
+		mLoadingIndicator.setVisibility(View.INVISIBLE);
+		mErrorMessageDisplay.setVisibility(View.INVISIBLE);
+		mRecyclerView.setVisibility(View.VISIBLE);
+	}
+
+
 }
