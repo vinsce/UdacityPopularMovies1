@@ -11,6 +11,8 @@ import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
+import java.util.Calendar;
+
 public class DetailsActivity extends AppCompatActivity {
 	public static final String MOVIE_JSON_ARG_KEY = "MOVIE_JSON";
 
@@ -46,8 +48,11 @@ public class DetailsActivity extends AppCompatActivity {
 	void populateView() {
 		mTitleTextView.setText(mMovie.getTitle());
 		mPlotTextView.setText(mMovie.getPlotSynopsis());
-		mDateTextView.setText(String.valueOf(mMovie.getReleaseDate().getYear()));
 		mRatingTextView.setText(String.valueOf(mMovie.getUserRating()));
+
+		Calendar calendar = Calendar.getInstance();
+		calendar.setTimeInMillis(mMovie.getReleaseDate().getTime());
+		mDateTextView.setText(String.valueOf(calendar.get(Calendar.YEAR)));
 
 		Picasso.with(this).load(APIUtils.getURLForImage(mMovie.getImageUrl())).into(mImageView);
 	}

@@ -4,6 +4,7 @@ import android.net.Uri;
 
 import com.example.android.popularmoviesp1.model.Movie;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -59,7 +60,8 @@ public class APIUtils {
 			Movie[] resultArray = new Movie[moviesArray.length()];
 
 			Movie tmpMovie;
-			Gson gson = new Gson();
+			Gson gson = new GsonBuilder().setDateFormat("yyyy-MM-dd").create();
+
 			for (int i = 0; i < moviesArray.length(); i++) {
 				tmpMovie = gson.fromJson(moviesArray.getString(i), Movie.class);
 				resultArray[i] = tmpMovie;
