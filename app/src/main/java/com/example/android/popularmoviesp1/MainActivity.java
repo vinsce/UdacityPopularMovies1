@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	private TextView mErrorMessageDisplay;
 	private ProgressBar mLoadingIndicator;
 
-	private APIUtils.SortOption mSortOption;
+	private APIUtils.SortOption mSortOption = APIUtils.SortOption.MOST_POPULAR;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
