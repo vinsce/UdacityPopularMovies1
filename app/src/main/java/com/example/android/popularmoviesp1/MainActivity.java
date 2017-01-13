@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
@@ -24,7 +25,10 @@ public class MainActivity extends AppCompatActivity {
 	}
 
 	private void loadMovies() {
-		new FetchMovies().execute(getString(R.string.api_key));
+		if (Networking.isNetworkAvailable(this))
+			new FetchMovies().execute(getString(R.string.api_key));
+		else
+			Toast.makeText(this, R.string.network_unavailable, Toast.LENGTH_LONG).show();
 	}
 
 	@Override
