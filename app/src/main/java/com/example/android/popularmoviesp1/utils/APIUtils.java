@@ -34,7 +34,7 @@ public class APIUtils {
 		return url;
 	}
 
-	public URL getMostPopularMoviesURL(String apiKey) {
+	public static URL getMostPopularMoviesURL(String apiKey) {
 		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(MOST_POPULAR_MOVIES_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
 
 		URL url = null;
@@ -47,7 +47,7 @@ public class APIUtils {
 	}
 
 
-	public URL getTopRatedMoviesURL(String apiKey) {
+	public static URL getTopRatedMoviesURL(String apiKey) {
 		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(TOP_RATED_MOVIES_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
 
 		URL url = null;
