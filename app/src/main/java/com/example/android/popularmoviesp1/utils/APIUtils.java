@@ -34,8 +34,14 @@ public class APIUtils {
 		return url;
 	}
 
-	public static URL getMostPopularMoviesURL(String apiKey) {
-		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(MOST_POPULAR_MOVIES_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
+	public static URL getMoviesURL(String apiKey, SortOption sortOption) {
+		String sortingPath;
+		if (sortOption == SortOption.MOST_POPULAR)
+			sortingPath = MOST_POPULAR_MOVIES_PATH;
+		else
+			sortingPath = TOP_RATED_MOVIES_PATH;
+
+		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(sortingPath).appendQueryParameter(API_KEY_PARAM, apiKey).build();
 
 		URL url = null;
 		try {
@@ -46,17 +52,5 @@ public class APIUtils {
 		return url;
 	}
 
-
-	public static URL getTopRatedMoviesURL(String apiKey) {
-		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(TOP_RATED_MOVIES_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
-
-		URL url = null;
-		try {
-			url = new URL(builtUri.toString());
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
-		}
-		return url;
-	}
-
+	public enum SortOption {MOST_POPULAR, TOP_RATED}
 }
