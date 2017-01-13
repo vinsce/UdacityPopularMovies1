@@ -1,7 +1,9 @@
 package com.example.android.popularmoviesp1;
 
 import android.os.Bundle;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.TypedValue;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -42,13 +44,17 @@ public class DetailsActivity extends AppCompatActivity {
 		mRatingTextView = (TextView) findViewById(R.id.tv_rating);
 		mImageView = (ImageView) findViewById(R.id.image);
 
+		ViewCompat.setElevation(mTitleTextView, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
+
 		populateView();
 	}
 
 	void populateView() {
 		mTitleTextView.setText(mMovie.getTitle());
 		mPlotTextView.setText(mMovie.getPlotSynopsis());
-		mRatingTextView.setText(String.valueOf(mMovie.getUserRating()));
+
+		String ratingText = String.valueOf(mMovie.getUserRating()) + "/10";
+		mRatingTextView.setText(ratingText);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(mMovie.getReleaseDate().getTime());
