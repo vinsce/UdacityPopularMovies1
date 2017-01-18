@@ -3,11 +3,10 @@ package com.example.android.popularmoviesp1;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.view.ViewCompat;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
-import android.util.TypedValue;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesp1.databinding.ActivityDetailsBinding;
@@ -48,6 +47,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 		}
 
 		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_details);
+
+		setSupportActionBar(mBinding.toolbar);
+		ActionBar actionBar = getSupportActionBar();
+		if (actionBar != null)
+			actionBar.setDisplayHomeAsUpEnabled(true);
+
 		mBinding.setMovie(mMovie);
 
 		mBinding.rvTrailers.setLayoutManager(new LinearLayoutManager(this));
@@ -57,12 +62,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 		mAdapter = new TrailersListAdapter(this);
 		mBinding.rvTrailers.setAdapter(mAdapter);
 
-		ViewCompat.setElevation(mBinding.tvTitle, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
 		new FetchTrailers().execute(getString(R.string.api_key));
 		populateView();
 	}
 
 	void populateView() {
+		setTitle(mMovie.getTitle());
 		String ratingText = String.valueOf(mMovie.getUserRating()) + "/10";
 		mBinding.tvRating.setText(ratingText);
 
