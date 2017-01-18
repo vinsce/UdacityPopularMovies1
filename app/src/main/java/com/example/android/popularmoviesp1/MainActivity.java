@@ -1,6 +1,8 @@
 package com.example.android.popularmoviesp1;
 
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -15,7 +17,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesp1.adapters.MovieAdapterOnClickHandler;
+import com.example.android.popularmoviesp1.adapters.MoviesCursorGridAdapter;
 import com.example.android.popularmoviesp1.adapters.MoviesGridAdapter;
+import com.example.android.popularmoviesp1.data.MoviesContract;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
@@ -28,12 +32,14 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
 	private RecyclerView mRecyclerView;
 
-	private MoviesGridAdapter mAdapter;
+	private MoviesGridAdapter mMoviesAdapter;
+	private MoviesCursorGridAdapter mFavoriteMoviesAdapter;
 
 	private TextView mErrorMessageDisplay;
 	private ProgressBar mLoadingIndicator;
 
 	private APIUtils.SortOption mSortOption = APIUtils.SortOption.MOST_POPULAR;
+
 	private Movie[] mMovies;
 
 	@Override
@@ -52,20 +58,33 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 		mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 		mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error);
 		GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
-		mAdapter = new MoviesGridAdapter(this);
+
+		mMoviesAdapter = new MoviesGridAdapter(this);
+		mFavoriteMoviesAdapter = new MoviesCursorGridAdapter(this);
 
 		mRecyclerView.setLayoutManager(layoutManager);
-		mRecyclerView.setAdapter(mAdapter);
 		mRecyclerView.setHasFixedSize(true);
 
+		if (mSortOption == APIUtils.SortOption.FAVORITES)
+			mRecyclerView.setAdapter(mFavoriteMoviesAdapter);
+		else
+			mRecyclerView.setAdapter(mMoviesAdapter);
+
 		mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-		if (mMovies == null)
+
+		if (mSortOption == APIUtils.SortOption.FAVORITES) {
 			loadMovies();
-		else mAdapter.setMoviesList(mMovies);
+		} else {
+			if (mMovies == null)
+				loadMovies();
+			else mMoviesAdapter.setMoviesList(mMovies);
+		}
 	}
 
 	private void loadMovies() {
-		if (Networking.isNetworkAvailable(this))
+		if (mSortOption == APIUtils.SortOption.FAVORITES) {
+			loadFavoritesMovies();
+		} else if (Networking.isNetworkAvailable(this))
 			new FetchMovies().execute(getString(R.string.api_key));
 		else {
 			showErrorMessage();
@@ -79,6 +98,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
 		MenuItem mostPopularItem = menu.findItem(R.id.action_sort_popular);
 		MenuItem topRatedItem = menu.findItem(R.id.action_sort_rating);
+		MenuItem favoritesItem = menu.findItem(R.id.action_favorites);
 
 		switch (mSortOption) {
 			case MOST_POPULAR:
@@ -86,6 +106,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 				break;
 			case TOP_RATED:
 				topRatedItem.setChecked(true);
+				break;
+			case FAVORITES:
+				favoritesItem.setChecked(true);
 				break;
 		}
 		return true;
@@ -108,6 +131,13 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 				}
 				item.setChecked(true);
 				return true;
+			case R.id.action_favorites:
+				if (mSortOption != APIUtils.SortOption.FAVORITES) {
+					mSortOption = APIUtils.SortOption.FAVORITES;
+					loadMovies();
+				}
+				item.setChecked(true);
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
@@ -118,6 +148,15 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 		Intent intentToStartDetailActivity = new Intent(this, DetailsActivity.class);
 		intentToStartDetailActivity.putExtra(DetailsActivity.MOVIE_ARG_KEY, movie);
 		startActivity(intentToStartDetailActivity);
+	}
+
+	private void loadFavoritesMovies() {
+		Uri uriToQuery = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).build();
+		Cursor cursor = getContentResolver().query(uriToQuery, null, null, null, null);
+		if (cursor != null)
+			mFavoriteMoviesAdapter.swapCursor(cursor);
+		mRecyclerView.setAdapter(mFavoriteMoviesAdapter);
+		showData();
 	}
 
 	public class FetchMovies extends AsyncTask<String, Void, String> {
@@ -154,7 +193,8 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 				mMovies = APIUtils.getMovieArrayFromNetworkResponse(data);
 				if (mMovies == null) showErrorMessage();
 				else {
-					mAdapter.setMoviesList(mMovies);
+					mMoviesAdapter.setMoviesList(mMovies);
+					mRecyclerView.setAdapter(mMoviesAdapter);
 					showData();
 				}
 			} else showErrorMessage();

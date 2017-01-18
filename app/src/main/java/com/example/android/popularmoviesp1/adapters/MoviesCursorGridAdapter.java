@@ -1,8 +1,6 @@
 package com.example.android.popularmoviesp1.adapters;
 
-import android.content.Context;
 import android.database.Cursor;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,20 +23,17 @@ import java.util.Date;
 
 public class MoviesCursorGridAdapter extends RecyclerView.Adapter<MoviesCursorGridAdapter.MovieViewHolder> {
 
-	private final Context mContext;
-
 	final private MovieAdapterOnClickHandler mClickHandler;
 
 	private Cursor mCursor;
 
-	public MoviesCursorGridAdapter(@NonNull Context context, MovieAdapterOnClickHandler clickHandler) {
-		mContext = context;
+	public MoviesCursorGridAdapter(MovieAdapterOnClickHandler clickHandler) {
 		mClickHandler = clickHandler;
 	}
 
 	@Override
 	public MovieViewHolder onCreateViewHolder(ViewGroup viewGroup, int viewType) {
-		View view = LayoutInflater.from(mContext).inflate(R.layout.movie_list_item, viewGroup, false);
+		View view = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.movie_list_item, viewGroup, false);
 		return new MovieViewHolder(view);
 	}
 
@@ -64,8 +59,11 @@ public class MoviesCursorGridAdapter extends RecyclerView.Adapter<MoviesCursorGr
 		return mCursor.getCount();
 	}
 
-	void swapCursor(Cursor newCursor) {
+	public void swapCursor(Cursor newCursor) {
+		Cursor tmpCursor = mCursor;
 		mCursor = newCursor;
+		if (tmpCursor != null)
+			tmpCursor.close();
 		notifyDataSetChanged();
 	}
 

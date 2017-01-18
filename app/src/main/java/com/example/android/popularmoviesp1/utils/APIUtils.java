@@ -117,7 +117,7 @@ public class APIUtils {
 		return new Intent(Intent.ACTION_VIEW, videoUri);
 	}
 
-	public enum SortOption {MOST_POPULAR, TOP_RATED}
+	public enum SortOption {MOST_POPULAR, TOP_RATED, FAVORITES}
 
 	public static URL getTrailersURL(String apiKey, String movieId) {
 		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(movieId).appendPath(TRAILERS_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
