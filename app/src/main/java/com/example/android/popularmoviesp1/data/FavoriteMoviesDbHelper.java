@@ -30,6 +30,7 @@ public class FavoriteMoviesDbHelper extends SQLiteOpenHelper {
 				MoviesContract.FavoriteMoviesEntry.COLUMN_SYNOPSIS + " STRING NOT NULL, " +
 				MoviesContract.FavoriteMoviesEntry.COLUMN_RATING + " REAL NOT NULL, " +
 				MoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE + " INTEGER NOT NULL, " +
+				MoviesContract.FavoriteMoviesEntry.COLUMN_MOVIE_ID + " STRING NOT NULL, " +
 				" UNIQUE (" + MoviesContract.FavoriteMoviesEntry.COLUMN_MOVIE_ID + ") ON CONFLICT REPLACE);";
 
 		sqLiteDatabase.execSQL(SQL_CREATE_TABLE);
