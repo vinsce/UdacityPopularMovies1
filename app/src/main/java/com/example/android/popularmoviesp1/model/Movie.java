@@ -14,6 +14,10 @@ import java.util.Date;
  */
 
 public class Movie implements Parcelable {
+
+	@SerializedName("id")
+	private String mId;
+
 	@SerializedName("original_title")
 	private String mTitle;
 
@@ -29,12 +33,17 @@ public class Movie implements Parcelable {
 	@SerializedName("release_date")
 	private Date mReleaseDate;
 
-	public Movie(String title, String imageUrl, String plotSynopsis, float userRating, Date releaseDate) {
+	public Movie(String id, String title, String imageUrl, String plotSynopsis, float userRating, Date releaseDate) {
+		mId = id;
 		mTitle = title;
 		mImageUrl = imageUrl;
 		mPlotSynopsis = plotSynopsis;
 		mUserRating = userRating;
 		mReleaseDate = releaseDate;
+	}
+
+	public String getId() {
+		return mId;
 	}
 
 	public String getTitle() {
@@ -63,6 +72,7 @@ public class Movie implements Parcelable {
 	}
 
 	private Movie(Parcel in) {
+		mId = in.readString();
 		mTitle = in.readString();
 		mImageUrl = in.readString();
 		mPlotSynopsis = in.readString();
@@ -88,6 +98,7 @@ public class Movie implements Parcelable {
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(mId);
 		dest.writeString(mTitle);
 		dest.writeString(mImageUrl);
 		dest.writeString(mPlotSynopsis);

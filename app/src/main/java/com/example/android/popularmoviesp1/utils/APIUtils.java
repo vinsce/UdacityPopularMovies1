@@ -1,8 +1,10 @@
 package com.example.android.popularmoviesp1.utils;
 
 import android.net.Uri;
+import android.util.Log;
 
 import com.example.android.popularmoviesp1.model.Movie;
+import com.example.android.popularmoviesp1.model.Trailer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -23,6 +25,9 @@ public class APIUtils {
 	private static String BASE_MOVIES_API_URL = "http://api.themoviedb.org/3/movie/";
 	private static String MOST_POPULAR_MOVIES_PATH = "popular";
 	private static String TOP_RATED_MOVIES_PATH = "top_rated";
+
+	private static String TRAILERS_PATH = "videos";
+
 	private static String API_KEY_PARAM = "api_key";
 
 	// Images
@@ -55,6 +60,7 @@ public class APIUtils {
 	public static Movie[] getMovieArrayFromNetworkResponse(String response) {
 		try {
 			JSONObject mainJson = new JSONObject(response);
+			Log.d("JSON", mainJson.toString());
 			JSONArray moviesArray = mainJson.getJSONArray("results");
 
 			Movie[] resultArray = new Movie[moviesArray.length()];
@@ -73,8 +79,44 @@ public class APIUtils {
 			e.printStackTrace();
 			return null;
 		}
+	}
+
+	public static Trailer[] getTrailerArrayFromNetworkResponse(String response) {
+		try {
+			JSONObject mainJson = new JSONObject(response);
+			JSONArray trailersArray = mainJson.getJSONArray("results");
+
+			Trailer[] resultArray = new Trailer[trailersArray.length()];
+
+			Trailer tmpTrailer;
+
+			Gson gson = new Gson();
+
+			for (int i = 0; i < trailersArray.length(); i++) {
+				tmpTrailer = gson.fromJson(trailersArray.getString(i), Trailer.class);
+				resultArray[i] = tmpTrailer;
+			}
+
+			return resultArray;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 
 	}
 
 	public enum SortOption {MOST_POPULAR, TOP_RATED}
+
+	public static URL getTrailersURL(String apiKey, String movieId) {
+		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(movieId).appendPath(TRAILERS_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
+
+		URL url = null;
+		try {
+			url = new URL(builtUri.toString());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
 }
