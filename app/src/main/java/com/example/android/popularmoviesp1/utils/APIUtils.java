@@ -1,5 +1,7 @@
 package com.example.android.popularmoviesp1.utils;
 
+import android.content.Context;
+import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
 
@@ -27,6 +29,8 @@ public class APIUtils {
 	private static String TOP_RATED_MOVIES_PATH = "top_rated";
 
 	private static String TRAILERS_PATH = "videos";
+	private static String YOUTUBE_PLAY_BASE_URL = "https://www.youtube.com/watch";
+	private static String YOUTUBE_VIDEO_KEY_PARAM = "v";
 
 	private static String API_KEY_PARAM = "api_key";
 
@@ -103,7 +107,11 @@ public class APIUtils {
 			e.printStackTrace();
 			return null;
 		}
+	}
 
+	public static Intent getYoutubeTrailerIntent(Context context, String videoKey) {
+		Uri videoUri = Uri.parse(YOUTUBE_PLAY_BASE_URL).buildUpon().appendQueryParameter(YOUTUBE_VIDEO_KEY_PARAM, videoKey).build();
+		return new Intent(Intent.ACTION_VIEW, videoUri);
 	}
 
 	public enum SortOption {MOST_POPULAR, TOP_RATED}
