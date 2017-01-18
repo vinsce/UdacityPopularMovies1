@@ -59,7 +59,7 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 		//init views
 		mRecyclerView = (RecyclerView) findViewById(R.id.recyclerview_movies);
 		mErrorMessageDisplay = (TextView) findViewById(R.id.tv_error);
-		GridLayoutManager layoutManager = new GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false);
+		GridLayoutManager layoutManager = new GridLayoutManager(this, getResources().getInteger(R.integer.main_grid_columns), GridLayoutManager.VERTICAL, false);
 
 		mMoviesAdapter = new MoviesGridAdapter(this);
 		mFavoriteMoviesAdapter = new MoviesCursorGridAdapter(this);
