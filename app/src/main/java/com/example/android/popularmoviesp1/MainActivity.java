@@ -1,10 +1,12 @@
 package com.example.android.popularmoviesp1;
 
 import android.content.Intent;
+import android.database.ContentObserver;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -61,6 +63,17 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 
 		mMoviesAdapter = new MoviesGridAdapter(this);
 		mFavoriteMoviesAdapter = new MoviesCursorGridAdapter(this);
+
+		//Listening for favorites updates
+		Uri uriToQuery = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).build();
+		getContentResolver().registerContentObserver(uriToQuery, true, new ContentObserver(new Handler()) {
+			@Override
+			public void onChange(boolean selfChange) {
+				super.onChange(selfChange);
+				if (mSortOption == APIUtils.SortOption.FAVORITES && mFavoriteMoviesAdapter != null)
+					loadMovies();
+			}
+		});
 
 		mRecyclerView.setLayoutManager(layoutManager);
 		mRecyclerView.setHasFixedSize(true);
@@ -153,8 +166,9 @@ public class MainActivity extends AppCompatActivity implements MovieAdapterOnCli
 	private void loadFavoritesMovies() {
 		Uri uriToQuery = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).build();
 		Cursor cursor = getContentResolver().query(uriToQuery, null, null, null, null);
-		if (cursor != null)
+		if (cursor != null) {
 			mFavoriteMoviesAdapter.swapCursor(cursor);
+		}
 		mRecyclerView.setAdapter(mFavoriteMoviesAdapter);
 		showData();
 	}

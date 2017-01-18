@@ -1,6 +1,5 @@
 package com.example.android.popularmoviesp1.utils;
 
-import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
 import android.util.Log;
@@ -112,7 +111,7 @@ public class APIUtils {
 		}
 	}
 
-	public static Intent getYoutubeTrailerIntent(Context context, String videoKey) {
+	public static Intent getYoutubeTrailerIntent(String videoKey) {
 		Uri videoUri = Uri.parse(YOUTUBE_PLAY_BASE_URL).buildUpon().appendQueryParameter(YOUTUBE_VIDEO_KEY_PARAM, videoKey).build();
 		return new Intent(Intent.ACTION_VIEW, videoUri);
 	}

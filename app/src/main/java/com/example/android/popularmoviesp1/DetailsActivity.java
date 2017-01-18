@@ -118,7 +118,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 	@Override
 	public void onClick(Trailer trailer) {
-		startActivity(APIUtils.getYoutubeTrailerIntent(this, trailer.getProviderKey()));
+		startActivity(APIUtils.getYoutubeTrailerIntent(trailer.getProviderKey()));
 	}
 
 
