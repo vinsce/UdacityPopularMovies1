@@ -14,4 +14,7 @@
     <string name="reviews">Reviews</string>
     <string name="no_reviews_available">No reviews available</string>
     <string name="error_loading_reviews">Error loading reviews</string>
+
+    <!-- Content provider -->
+    <string name="content_authority">com.example.android.popularmoviesp1</string>
 </resources>
