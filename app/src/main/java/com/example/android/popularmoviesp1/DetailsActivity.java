@@ -1,6 +1,7 @@
 package com.example.android.popularmoviesp1;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.databinding.DataBindingUtil;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -242,6 +243,20 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 	}
 
 	private void initFavoriteButton() {
+		// Checking if movie already liked. If so, the icon in the FAB button is changed to a full star instead of empty star
+		Uri uriToQuery = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).appendPath(mMovie.getId()).build();
+		Cursor cursor = getContentResolver().query(uriToQuery, null, null, null, null);
+		if (cursor != null && cursor.getCount() != 0) {
+			mIsFavorite = true;
+			mBinding.fabStar.setImageResource(R.drawable.ic_star_on);
+		} else {
+			mIsFavorite = false;
+			mBinding.fabStar.setImageResource(R.drawable.ic_star_off);
+		}
+		if (cursor != null)
+			cursor.close();
+
+		// Handling on click on the favorite FAB. If the movie is already in favorites, it will be removed. Otherwise it will be added to favorites
 		mBinding.fabStar.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -250,6 +265,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 					if (inserted) {
 						mIsFavorite = true;
 						mBinding.fabStar.setImageResource(R.drawable.ic_star_on);
+					}
+				} else {
+					boolean deleted = deleteMovieFromFavorites();
+					if (deleted) {
+						mIsFavorite = false;
+						mBinding.fabStar.setImageResource(R.drawable.ic_star_off);
 					}
 				}
 			}
@@ -268,6 +289,17 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 			Uri uriToInsert = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).build();
 			return getContentResolver().insert(uriToInsert, movieValues) != null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, R.string.general_error_message, Toast.LENGTH_SHORT).show();
+			return false;
+		}
+	}
+
+	private boolean deleteMovieFromFavorites() {
+		try {
+			Uri uriToDelete = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).appendPath(mMovie.getId()).build();
+			return getContentResolver().delete(uriToDelete, null, null) > 0;
 		} catch (Exception e) {
 			e.printStackTrace();
 			Toast.makeText(this, R.string.general_error_message, Toast.LENGTH_SHORT).show();

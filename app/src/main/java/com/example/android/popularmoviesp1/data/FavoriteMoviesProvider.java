@@ -108,10 +108,13 @@ public class FavoriteMoviesProvider extends ContentProvider {
 
 		switch (sUriMatcher.match(uri)) {
 			case CODE_FAVORITE_MOVIES_WITH_MOVIE_ID:
+				String movieId = uri.getLastPathSegment();
+				String[] selectionArguments = new String[]{movieId};
+
 				numRowsDeleted = mOpenHelper.getWritableDatabase().delete(
 						MoviesContract.FavoriteMoviesEntry.TABLE_NAME,
-						selection,
-						selectionArgs);
+						MoviesContract.FavoriteMoviesEntry.COLUMN_MOVIE_ID + " = ? ",
+						selectionArguments);
 				break;
 
 			default:
