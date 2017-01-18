@@ -23,6 +23,7 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterOnClickHandler {
 	private static final String SORT_OPTION_STATE_KEY = "SORTING";
+	private static final String MOVIES_STATE_KEY = "MOVIES";
 
 	private RecyclerView mRecyclerView;
 
@@ -32,13 +33,17 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	private ProgressBar mLoadingIndicator;
 
 	private APIUtils.SortOption mSortOption = APIUtils.SortOption.MOST_POPULAR;
+	private Movie[] mMovies;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null && savedInstanceState.containsKey(SORT_OPTION_STATE_KEY)) {
-			mSortOption = APIUtils.SortOption.values()[savedInstanceState.getInt(SORT_OPTION_STATE_KEY)];
+		if (savedInstanceState != null) {
+			if (savedInstanceState.containsKey(SORT_OPTION_STATE_KEY))
+				mSortOption = APIUtils.SortOption.values()[savedInstanceState.getInt(SORT_OPTION_STATE_KEY)];
+			if (savedInstanceState.containsKey(MOVIES_STATE_KEY))
+				mMovies = (Movie[]) savedInstanceState.getParcelableArray(MOVIES_STATE_KEY);
 		}
 
 		setContentView(R.layout.activity_main);
@@ -53,7 +58,9 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 		mRecyclerView.setHasFixedSize(true);
 
 		mLoadingIndicator = (ProgressBar) findViewById(R.id.pb_loading_indicator);
-		loadMovies();
+		if (mMovies == null)
+			loadMovies();
+		else mAdapter.setMoviesList(mMovies);
 	}
 
 	private void loadMovies() {
@@ -143,10 +150,10 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 		protected void onPostExecute(String data) {
 			if (data != null) {
 				Log.d(MainActivity.class.getSimpleName(), data);
-				Movie[] movies = APIUtils.getMovieArrayFromNetworkResponse(data);
-				if (movies == null) showErrorMessage();
+				mMovies = APIUtils.getMovieArrayFromNetworkResponse(data);
+				if (mMovies == null) showErrorMessage();
 				else {
-					mAdapter.setMoviesList(movies);
+					mAdapter.setMoviesList(mMovies);
 					showData();
 				}
 			} else showErrorMessage();
@@ -176,5 +183,7 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 		super.onSaveInstanceState(outState);
 
 		outState.putInt(SORT_OPTION_STATE_KEY, mSortOption.ordinal());
+		if (mMovies != null)
+			outState.putParcelableArray(MOVIES_STATE_KEY, mMovies);
 	}
 }
