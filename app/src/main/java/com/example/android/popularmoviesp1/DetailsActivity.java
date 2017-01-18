@@ -15,14 +15,14 @@ import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.model.Trailer;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
-import com.google.gson.Gson;
 import com.squareup.picasso.Picasso;
 
 import java.net.URL;
 import java.util.Calendar;
 
 public class DetailsActivity extends AppCompatActivity implements TrailersListAdapter.TrailerAdapterOnClickHandler {
-	public static final String MOVIE_JSON_ARG_KEY = "MOVIE_JSON";
+	public static final String MOVIE_ARG_KEY = "MOVIE";
+	private static final String TRAILERS_ARG_KEY = "TRAILERS";
 
 	private Movie mMovie;
 	private Trailer[] mTrailers;
@@ -35,13 +35,12 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 
-		if (savedInstanceState != null && savedInstanceState.containsKey(MOVIE_JSON_ARG_KEY)) {
-			String movieString = savedInstanceState.getString(MOVIE_JSON_ARG_KEY);
-			mMovie = new Gson().fromJson(movieString, Movie.class);
-		}
-		if (getIntent() != null && getIntent().hasExtra(MOVIE_JSON_ARG_KEY)) {
-			String movieString = getIntent().getStringExtra(MOVIE_JSON_ARG_KEY);
-			mMovie = new Gson().fromJson(movieString, Movie.class);
+		if (savedInstanceState != null && savedInstanceState.containsKey(MOVIE_ARG_KEY)) {
+			mMovie = savedInstanceState.getParcelable(MOVIE_ARG_KEY);
+			if (savedInstanceState.containsKey(TRAILERS_ARG_KEY))
+				mTrailers = (Trailer[]) savedInstanceState.getParcelableArray(TRAILERS_ARG_KEY);
+		} else if (getIntent() != null && getIntent().hasExtra(MOVIE_ARG_KEY)) {
+			mMovie = getIntent().getParcelableExtra(MOVIE_ARG_KEY);
 		} else {
 			Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
 			finish();
@@ -77,8 +76,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 	@Override
 	protected void onSaveInstanceState(Bundle outState) {
 		super.onSaveInstanceState(outState);
-
-		outState.putString(MOVIE_JSON_ARG_KEY, new Gson().toJson(mMovie));
+		outState.putParcelable(MOVIE_ARG_KEY, mMovie);
+		if (mTrailers != null)
+			outState.putParcelableArray(TRAILERS_ARG_KEY, mTrailers);
 	}
 
 	@Override

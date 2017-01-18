@@ -17,7 +17,6 @@ import android.widget.Toast;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
-import com.google.gson.Gson;
 
 import java.net.URL;
 
@@ -115,7 +114,7 @@ public class MainActivity extends AppCompatActivity implements MoviesGridAdapter
 	@Override
 	public void onClick(Movie movie) {
 		Intent intentToStartDetailActivity = new Intent(this, DetailsActivity.class);
-		intentToStartDetailActivity.putExtra(DetailsActivity.MOVIE_JSON_ARG_KEY, new Gson().toJson(movie));
+		intentToStartDetailActivity.putExtra(DetailsActivity.MOVIE_ARG_KEY, movie);
 		startActivity(intentToStartDetailActivity);
 	}
 

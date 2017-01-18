@@ -77,6 +77,7 @@ public class Movie implements Parcelable {
 		mImageUrl = in.readString();
 		mPlotSynopsis = in.readString();
 		mUserRating = in.readFloat();
+		mReleaseDate = (Date) in.readSerializable();
 	}
 
 	public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -103,5 +104,6 @@ public class Movie implements Parcelable {
 		dest.writeString(mImageUrl);
 		dest.writeString(mPlotSynopsis);
 		dest.writeFloat(mUserRating);
+		dest.writeSerializable(mReleaseDate);
 	}
 }
