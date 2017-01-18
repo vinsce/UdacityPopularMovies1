@@ -1,17 +1,16 @@
 package com.example.android.popularmoviesp1;
 
+import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.util.TypedValue;
-import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesp1.databinding.ActivityDetailsBinding;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.model.Trailer;
 import com.example.android.popularmoviesp1.utils.APIUtils;
@@ -28,11 +27,9 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 	private Movie mMovie;
 	private Trailer[] mTrailers;
 
-	private RecyclerView mTrailersRecyclerView;
 	private TrailersListAdapter mAdapter;
 
-	private TextView mTitleTextView, mPlotTextView, mDateTextView, mRatingTextView;
-	private ImageView mImageView;
+	ActivityDetailsBinding mBinding;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,39 +48,30 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 			return;
 		}
 
-		setContentView(R.layout.activity_details);
+		mBinding = DataBindingUtil.setContentView(this, R.layout.activity_details);
+		mBinding.setMovie(mMovie);
 
-		mTitleTextView = (TextView) findViewById(R.id.tv_title);
-		mPlotTextView = (TextView) findViewById(R.id.tv_plot);
-		mDateTextView = (TextView) findViewById(R.id.tv_date);
-		mRatingTextView = (TextView) findViewById(R.id.tv_rating);
-		mImageView = (ImageView) findViewById(R.id.image);
-
-		mTrailersRecyclerView = (RecyclerView) findViewById(R.id.rv_trailers);
-		mTrailersRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-		mTrailersRecyclerView.setNestedScrollingEnabled(false);
-		mTrailersRecyclerView.setHasFixedSize(true);
+		mBinding.rvTrailers.setLayoutManager(new LinearLayoutManager(this));
+		mBinding.rvTrailers.setNestedScrollingEnabled(false);
+		mBinding.rvTrailers.setHasFixedSize(true);
 
 		mAdapter = new TrailersListAdapter(this);
-		mTrailersRecyclerView.setAdapter(mAdapter);
+		mBinding.rvTrailers.setAdapter(mAdapter);
 
-		ViewCompat.setElevation(mTitleTextView, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
+		ViewCompat.setElevation(mBinding.tvTitle, TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 4, getResources().getDisplayMetrics()));
 		new FetchTrailers().execute(getString(R.string.api_key));
 		populateView();
 	}
 
 	void populateView() {
-		mTitleTextView.setText(mMovie.getTitle());
-		mPlotTextView.setText(mMovie.getPlotSynopsis());
-
 		String ratingText = String.valueOf(mMovie.getUserRating()) + "/10";
-		mRatingTextView.setText(ratingText);
+		mBinding.tvRating.setText(ratingText);
 
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(mMovie.getReleaseDate().getTime());
-		mDateTextView.setText(String.valueOf(calendar.get(Calendar.YEAR)));
+		mBinding.tvDate.setText(String.valueOf(calendar.get(Calendar.YEAR)));
 
-		Picasso.with(this).load(APIUtils.getURLForImage(mMovie.getImageUrl())).into(mImageView);
+		Picasso.with(this).load(APIUtils.getURLForImage(mMovie.getImageUrl())).into(mBinding.image);
 	}
 
 	@Override
