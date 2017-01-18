@@ -6,6 +6,7 @@ import android.net.Uri;
 import android.util.Log;
 
 import com.example.android.popularmoviesp1.model.Movie;
+import com.example.android.popularmoviesp1.model.Review;
 import com.example.android.popularmoviesp1.model.Trailer;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -31,6 +32,8 @@ public class APIUtils {
 	private static String TRAILERS_PATH = "videos";
 	private static String YOUTUBE_PLAY_BASE_URL = "https://www.youtube.com/watch";
 	private static String YOUTUBE_VIDEO_KEY_PARAM = "v";
+
+	private static String REVIEWS_PATH = "reviews";
 
 	private static String API_KEY_PARAM = "api_key";
 
@@ -126,5 +129,41 @@ public class APIUtils {
 			e.printStackTrace();
 		}
 		return url;
+	}
+
+	public static URL getReviewsURL(String apiKey, String movieId) {
+		Uri builtUri = Uri.parse(BASE_MOVIES_API_URL).buildUpon().appendPath(movieId).appendPath(REVIEWS_PATH).appendQueryParameter(API_KEY_PARAM, apiKey).build();
+
+		URL url = null;
+		try {
+			url = new URL(builtUri.toString());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		return url;
+	}
+
+	public static Review[] getReviewArrayFromNetworkResponse(String response) {
+		try {
+			JSONObject mainJson = new JSONObject(response);
+			JSONArray reviewsArray = mainJson.getJSONArray("results");
+
+			Review[] resultArray = new Review[reviewsArray.length()];
+
+			Review tmpReview;
+
+			Gson gson = new Gson();
+
+			for (int i = 0; i < reviewsArray.length(); i++) {
+				tmpReview = gson.fromJson(reviewsArray.getString(i), Review.class);
+				resultArray[i] = tmpReview;
+			}
+
+			return resultArray;
+
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }

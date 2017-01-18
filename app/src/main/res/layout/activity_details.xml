@@ -20,14 +20,12 @@
             android:id="@+id/appbarLayout"
             android:layout_width="match_parent"
             android:layout_height="180dp"
-            android:fitsSystemWindows="true"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
 
             <net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout
                 android:id="@+id/collapsingToolbarLayout"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fitsSystemWindows="true"
+                android:layout_height="180dp"
                 app:contentScrim="@color/colorPrimary"
                 app:layout_scrollFlags="scroll|enterAlways|enterAlwaysCollapsed"
                 app:title="@{movie.title}">
@@ -36,7 +34,6 @@
                     android:id="@+id/toolbar"
                     android:layout_width="match_parent"
                     android:layout_height="?attr/actionBarSize"
-                    android:minHeight="?attr/actionBarSize"
                     app:layout_collapseMode="pin"/>
 
             </net.opacapp.multilinecollapsingtoolbar.CollapsingToolbarLayout>
@@ -130,7 +127,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:minHeight="80dp"
-                    app:layout_constraintHorizontal_bias="0.62"
+                    app:layout_constraintHorizontal_bias="0.50"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_trailers_title"
@@ -144,41 +141,73 @@
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
-                    app:layout_constraintHorizontal_bias="0.62"
+                    android:visibility="invisible"
+                    app:layout_constraintHorizontal_bias="0.50"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_trailers_title"
                     tools:text="@string/error_message"/>
 
                 <ProgressBar
-                    android:id="@+id/pb_loading_indicator"
+                    android:id="@+id/pb_loading_indicator_trailers"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginEnd="16dp"
-                    android:layout_marginLeft="16dp"
-                    android:layout_marginRight="16dp"
-                    android:layout_marginStart="16dp"
-                    android:layout_marginTop="8dp"
-                    android:visibility="gone"
+                    android:visibility="invisible"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_trailers_title"/>
 
-                <Button
-                    android:id="@+id/btn_reviews"
+
+                <TextView
+                    android:id="@+id/tv_reviews_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/reviews"
+                    android:textSize="18sp"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/rv_trailers"/>
+
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/rv_reviews"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="16dp"
                     android:layout_marginLeft="16dp"
                     android:layout_marginRight="16dp"
                     android:layout_marginStart="16dp"
-                    android:layout_marginTop="16dp"
-                    android:text="@string/reviews"
+                    android:minHeight="80dp"
+                    app:layout_constraintHorizontal_bias="0.50"
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rv_trailers"/>
+                    app:layout_constraintTop_toBottomOf="@+id/tv_reviews_title"
+                    tools:listitem="@layout/review_list_item"/>
+
+                <TextView
+                    android:id="@+id/tv_reviews_message"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginLeft="16dp"
+                    android:layout_marginRight="16dp"
+                    android:layout_marginStart="16dp"
+                    android:visibility="invisible"
+                    app:layout_constraintHorizontal_bias="0.50"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_reviews_title"
+                    tools:text="@string/error_message"/>
+
+                <ProgressBar
+                    android:id="@+id/pb_loading_indicator_reviews"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="invisible"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/tv_reviews_title"/>
 
             </android.support.constraint.ConstraintLayout>
 

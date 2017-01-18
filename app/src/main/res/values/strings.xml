@@ -6,8 +6,12 @@
     <string name="network_unavailable">Network unavailable</string>
     <string name="error_message">Error loading movies</string>
     <string name="movie_details">Movie details</string>
-    <string name="reviews">Reviews</string>
+
     <string name="trailers">Trailers</string>
     <string name="no_trailers_available">No trailers available</string>
     <string name="error_loading_trailers">Error loading movies</string>
+
+    <string name="reviews">Reviews</string>
+    <string name="no_reviews_available">No reviews available</string>
+    <string name="error_loading_reviews">Error loading reviews</string>
 </resources>
