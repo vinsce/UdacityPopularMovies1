@@ -7,10 +7,13 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
+import android.support.v4.app.ShareCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
@@ -43,6 +46,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 	ActivityDetailsBinding mBinding;
 
 	private boolean mIsFavorite = false;
+	private MenuItem mShareMenuItem;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -155,11 +159,25 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 				if (mTrailers != null && mTrailers.length > 0) {
 					mTrailersAdapter.setTrailersList(mTrailers);
 					showTrailers();
+					setSharingAction();
 				} else showTrailersLoadingError(R.string.no_trailers_available);
 			} else {
 				showTrailersLoadingError(R.string.error_loading_trailers);
 			}
 		}
+	}
+
+	private void setSharingAction() {
+		if (mShareMenuItem == null || mTrailers == null || mTrailers.length == 0) return;
+		final ShareCompat.IntentBuilder shareIntentBuilder = ShareCompat.IntentBuilder.from(DetailsActivity.this).setText(mTrailers[0].getName() + ": " + APIUtils.getYoutubeTrailerUrl(mTrailers[0].getProviderKey()).toString()).setType("text/plain");
+		mShareMenuItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				startActivity(shareIntentBuilder.getIntent());
+				return true;
+			}
+		});
+		mShareMenuItem.setVisible(true);
 	}
 
 	private void showLoadingTrailersIndicator() {
@@ -308,4 +326,14 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 			return false;
 		}
 	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		getMenuInflater().inflate(R.menu.activity_details, menu);
+		mShareMenuItem = menu.findItem(R.id.action_share);
+		mShareMenuItem.setVisible(false);
+		setSharingAction();
+		return true;
+	}
+
 }

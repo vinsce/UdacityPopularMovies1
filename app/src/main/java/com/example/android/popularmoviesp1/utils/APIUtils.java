@@ -111,6 +111,11 @@ public class APIUtils {
 		}
 	}
 
+	public static Uri getYoutubeTrailerUrl(String videoKey) {
+		Uri videoUri = Uri.parse(YOUTUBE_PLAY_BASE_URL).buildUpon().appendQueryParameter(YOUTUBE_VIDEO_KEY_PARAM, videoKey).build();
+		return videoUri;
+	}
+
 	public static Intent getYoutubeTrailerIntent(String videoKey) {
 		Uri videoUri = Uri.parse(YOUTUBE_PLAY_BASE_URL).buildUpon().appendQueryParameter(YOUTUBE_VIDEO_KEY_PARAM, videoKey).build();
 		return new Intent(Intent.ACTION_VIEW, videoUri);
