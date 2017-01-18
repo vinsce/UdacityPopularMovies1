@@ -14,6 +14,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesp1.adapters.ReviewsListAdapter;
+import com.example.android.popularmoviesp1.adapters.TrailersListAdapter;
 import com.example.android.popularmoviesp1.data.MoviesContract;
 import com.example.android.popularmoviesp1.databinding.ActivityDetailsBinding;
 import com.example.android.popularmoviesp1.model.Movie;

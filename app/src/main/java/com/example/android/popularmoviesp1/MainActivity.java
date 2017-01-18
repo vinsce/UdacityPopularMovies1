@@ -14,13 +14,15 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesp1.adapters.MovieAdapterOnClickHandler;
+import com.example.android.popularmoviesp1.adapters.MoviesGridAdapter;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.example.android.popularmoviesp1.utils.Networking;
 
 import java.net.URL;
 
-public class MainActivity extends AppCompatActivity implements MoviesGridAdapter.MovieAdapterOnClickHandler {
+public class MainActivity extends AppCompatActivity implements MovieAdapterOnClickHandler {
 	private static final String SORT_OPTION_STATE_KEY = "SORTING";
 	private static final String MOVIES_STATE_KEY = "MOVIES";
 

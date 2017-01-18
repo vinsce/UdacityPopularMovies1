@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesp1;
+package com.example.android.popularmoviesp1.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.android.popularmoviesp1.R;
 import com.example.android.popularmoviesp1.model.Review;
 
 /**

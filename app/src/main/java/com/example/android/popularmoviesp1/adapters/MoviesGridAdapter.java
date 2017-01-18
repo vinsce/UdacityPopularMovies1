@@ -1,4 +1,4 @@
-package com.example.android.popularmoviesp1;
+package com.example.android.popularmoviesp1.adapters;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.example.android.popularmoviesp1.R;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.utils.APIUtils;
 import com.squareup.picasso.Picasso;
@@ -48,10 +49,6 @@ public class MoviesGridAdapter extends RecyclerView.Adapter<MoviesGridAdapter.Mo
 	public void setMoviesList(Movie[] movies) {
 		this.mMoviesList = movies;
 		notifyDataSetChanged();
-	}
-
-	public interface MovieAdapterOnClickHandler {
-		void onClick(Movie movie);
 	}
 
 	class MovieViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
