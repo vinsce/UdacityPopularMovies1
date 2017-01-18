@@ -3,10 +3,11 @@ package com.example.android.popularmoviesp1;
 import android.databinding.DataBindingUtil;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.StringRes;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.example.android.popularmoviesp1.databinding.ActivityDetailsBinding;
@@ -93,6 +94,11 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 
 	public class FetchTrailers extends AsyncTask<String, Void, String> {
+		@Override
+		protected void onPreExecute() {
+			super.onPreExecute();
+			showLoadingTrailersIndicator();
+		}
 
 		@Override
 		protected String doInBackground(String... params) {
@@ -115,12 +121,37 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 		@Override
 		protected void onPostExecute(String data) {
-			Log.d(MainActivity.class.getSimpleName(), data);
-
 			if (data != null) {
 				mTrailers = APIUtils.getTrailerArrayFromNetworkResponse(data);
-				mAdapter.setTrailersList(mTrailers);
+				if (mTrailers != null && mTrailers.length > 0) {
+					mAdapter.setTrailersList(mTrailers);
+					showTrailers();
+				} else showTrailersLoadingError(R.string.no_trailers_available);
+			} else {
+				showTrailersLoadingError(R.string.error_loading_trailers);
 			}
 		}
+	}
+
+	private void showLoadingTrailersIndicator() {
+		mBinding.pbLoadingIndicator.setVisibility(View.VISIBLE);
+		mBinding.rvTrailers.setVisibility(View.INVISIBLE);
+		mBinding.tvTrailersMessage.setVisibility(View.INVISIBLE);
+
+	}
+
+	private void showTrailers() {
+		mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
+		mBinding.rvTrailers.setAdapter(mAdapter);
+		mBinding.rvTrailers.setVisibility(View.VISIBLE);
+		mBinding.tvTrailersMessage.setVisibility(View.INVISIBLE);
+	}
+
+	private void showTrailersLoadingError(@StringRes int errorResourceId) {
+		mBinding.pbLoadingIndicator.setVisibility(View.INVISIBLE);
+		mBinding.rvTrailers.setAdapter(null);
+		mBinding.rvTrailers.setVisibility(View.INVISIBLE);
+		mBinding.tvTrailersMessage.setText(errorResourceId);
+		mBinding.tvTrailersMessage.setVisibility(View.VISIBLE);
 	}
 }

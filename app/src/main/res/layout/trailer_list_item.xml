@@ -7,8 +7,7 @@
     android:layout_height="wrap_content"
     android:background="?attr/selectableItemBackground"
     android:gravity="center_vertical"
-    android:orientation="horizontal"
-    android:padding="8dp">
+    android:orientation="horizontal">
 
     <android.support.v7.widget.AppCompatImageView
         android:layout_width="wrap_content"
@@ -20,6 +19,7 @@
         android:id="@+id/tv_trailer_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:padding="8dp"
         android:textColor="@android:color/black"
         tools:text="Trailer"/>
 
