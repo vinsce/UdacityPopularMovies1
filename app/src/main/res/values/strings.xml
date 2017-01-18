@@ -4,7 +4,8 @@
     <string name="most_popular">Most popular</string>
     <string name="top_rated">Top rated</string>
     <string name="network_unavailable">Network unavailable</string>
-    <string name="error_message">Error loading movies</string>
+    <string name="general_error_message">An error occurred</string>
+    <string name="error_loading_movies">Error loading movies</string>
     <string name="movie_details">Movie details</string>
 
     <string name="trailers">Trailers</string>

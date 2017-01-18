@@ -16,7 +16,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:padding="16dp"
-        android:text="@string/error_message"
+        android:text="@string/error_loading_movies"
         android:textSize="20sp"
         android:visibility="invisible"/>
 

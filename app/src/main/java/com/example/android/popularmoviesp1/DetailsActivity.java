@@ -1,6 +1,8 @@
 package com.example.android.popularmoviesp1;
 
+import android.content.ContentValues;
 import android.databinding.DataBindingUtil;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.StringRes;
@@ -11,6 +13,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.android.popularmoviesp1.data.MoviesContract;
 import com.example.android.popularmoviesp1.databinding.ActivityDetailsBinding;
 import com.example.android.popularmoviesp1.model.Movie;
 import com.example.android.popularmoviesp1.model.Review;
@@ -36,6 +39,8 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 	ActivityDetailsBinding mBinding;
 
+	private boolean mIsFavorite = false;
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
@@ -49,7 +54,7 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 		} else if (getIntent() != null && getIntent().hasExtra(MOVIE_ARG_KEY)) {
 			mMovie = getIntent().getParcelableExtra(MOVIE_ARG_KEY);
 		} else {
-			Toast.makeText(this, R.string.error_message, Toast.LENGTH_SHORT).show();
+			Toast.makeText(this, R.string.error_loading_movies, Toast.LENGTH_SHORT).show();
 			finish();
 			return;
 		}
@@ -94,6 +99,8 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 
 		new FetchTrailers().execute(getString(R.string.api_key));
 		new FetchReviews().execute(getString(R.string.api_key));
+
+		initFavoriteButton();
 	}
 
 	@Override
@@ -232,5 +239,39 @@ public class DetailsActivity extends AppCompatActivity implements TrailersListAd
 		mBinding.rvReviews.setVisibility(View.INVISIBLE);
 		mBinding.tvReviewsMessage.setText(errorResourceId);
 		mBinding.tvReviewsMessage.setVisibility(View.VISIBLE);
+	}
+
+	private void initFavoriteButton() {
+		mBinding.fabStar.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (!mIsFavorite) {
+					boolean inserted = insertMovieInFavorites();
+					if (inserted) {
+						mIsFavorite = true;
+						mBinding.fabStar.setImageResource(R.drawable.ic_star_on);
+					}
+				}
+			}
+		});
+	}
+
+	private boolean insertMovieInFavorites() {
+		try {
+			ContentValues movieValues = new ContentValues();
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_TITLE, mMovie.getTitle());
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_MOVIE_ID, mMovie.getId());
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_RELEASE_DATE, mMovie.getReleaseDate().getTime());
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_POSTER_URL, mMovie.getImageUrl());
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_RATING, mMovie.getUserRating());
+			movieValues.put(MoviesContract.FavoriteMoviesEntry.COLUMN_SYNOPSIS, mMovie.getPlotSynopsis());
+
+			Uri uriToInsert = MoviesContract.BASE_CONTENT_URI.buildUpon().appendPath(MoviesContract.PATH_FAVORITE_MOVIES).build();
+			return getContentResolver().insert(uriToInsert, movieValues) != null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Toast.makeText(this, R.string.general_error_message, Toast.LENGTH_SHORT).show();
+			return false;
+		}
 	}
 }

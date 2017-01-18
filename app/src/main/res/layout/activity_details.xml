@@ -141,7 +141,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_trailers_title"
-                    tools:text="@string/error_message"/>
+                    tools:text="@string/error_loading_movies"/>
 
                 <ProgressBar
                     android:id="@+id/pb_loading_indicator_trailers"
@@ -188,7 +188,7 @@
                     app:layout_constraintLeft_toLeftOf="parent"
                     app:layout_constraintRight_toRightOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/tv_reviews_title"
-                    tools:text="@string/error_message"/>
+                    tools:text="@string/error_loading_movies"/>
 
                 <ProgressBar
                     android:id="@+id/pb_loading_indicator_reviews"
